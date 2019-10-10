@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/MarcGrol/golangAnnotations/generator"
-	"github.com/MarcGrol/golangAnnotations/generator/annotation"
-	"github.com/MarcGrol/golangAnnotations/generator/event/eventAnnotation"
-	"github.com/MarcGrol/golangAnnotations/generator/generationUtil"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator"
+	"github.com/Duxxie/golangAnnotations/generator/annotation"
+	"github.com/Duxxie/golangAnnotations/generator/event/eventAnnotation"
+	"github.com/Duxxie/golangAnnotations/generator/generationUtil"
+	"github.com/Duxxie/golangAnnotations/model"
 )
 
 type Generator struct {

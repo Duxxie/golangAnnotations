@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarcGrol/golangAnnotations/generator/generationUtil"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator/generationUtil"
+	"github.com/Duxxie/golangAnnotations/model"
 	"github.com/stretchr/testify/assert"
 )
 

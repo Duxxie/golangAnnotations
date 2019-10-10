@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/model"
 )
 
 var debugAstOfSources = false

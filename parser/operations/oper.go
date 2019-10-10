@@ -3,7 +3,7 @@ package operations
 import (
 	"context"
 
-	"github.com/MarcGrol/golangAnnotations/parser/structs"
+	"github.com/Duxxie/golangAnnotations/parser/structs"
 )
 
 type Person struct {

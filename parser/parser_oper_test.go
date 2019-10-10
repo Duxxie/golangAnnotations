@@ -3,8 +3,8 @@ package parser
 import (
 	"testing"
 
-	"github.com/MarcGrol/golangAnnotations/generator"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator"
+	"github.com/Duxxie/golangAnnotations/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -66,11 +66,11 @@ func TestStructOperationsInDir(t *testing.T) {
 
 		assert.Equal(t, 1, len(o.InputArgs))
 		assertField(t, model.Field{Name: "in", TypeName: "structs.YetAnotherStruct",
-			PackageName: "github.com/MarcGrol/golangAnnotations/parser/structs"}, o.InputArgs[0])
+			PackageName: "github.com/Duxxie/golangAnnotations/parser/structs"}, o.InputArgs[0])
 
 		assert.Equal(t, 2, len(o.OutputArgs))
 		assertField(t, model.Field{TypeName: "*structs.YetAnotherStruct",
-			PackageName: "github.com/MarcGrol/golangAnnotations/parser/structs"}, o.OutputArgs[0])
+			PackageName: "github.com/Duxxie/golangAnnotations/parser/structs"}, o.OutputArgs[0])
 		assertField(t, model.Field{TypeName: "error"}, o.OutputArgs[1])
 	}
 	{
@@ -86,7 +86,7 @@ func TestStructOperationsInDir(t *testing.T) {
 
 		assert.Equal(t, 2, len(o.OutputArgs))
 		assertField(t, model.Field{TypeName: "[]*structs.YetAnotherStruct",
-			PackageName: "github.com/MarcGrol/golangAnnotations/parser/structs"}, o.OutputArgs[0])
+			PackageName: "github.com/Duxxie/golangAnnotations/parser/structs"}, o.OutputArgs[0])
 		assertField(t, model.Field{TypeName: "error"}, o.OutputArgs[1])
 	}
 }

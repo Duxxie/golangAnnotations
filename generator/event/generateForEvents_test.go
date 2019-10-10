@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarcGrol/golangAnnotations/generator/generationUtil"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator/generationUtil"
+	"github.com/Duxxie/golangAnnotations/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,16 +38,16 @@ func TestGenerateForEvents(t *testing.T) {
 	err := NewGenerator().Generate("testData", model.ParsedSources{Structs: s})
 	assert.Nil(t, err)
 
-	// check that generated files exisst
+	// check that generated files exists
 	_, err = os.Stat(generationUtil.Prefixed("./testData/aggregates.go"))
 	assert.NoError(t, err)
 
 	data, err := ioutil.ReadFile(generationUtil.Prefixed("./testData/aggregates.go"))
 	assert.NoError(t, err)
 	assert.Contains(t, string(data), "type TestAggregate interface {")
-	assert.Contains(t, string(data), "ApplyMyStruct(c context.Context, evt MyStruct)")
-	assert.Contains(t, string(data), "func ApplyTestEvent(c context.Context, envlp envelope.Envelope, aggregateRoot TestAggregate) error {")
-	assert.Contains(t, string(data), "func ApplyTestEvents(c context.Context, envelopes []envelope.Envelope, aggregateRoot TestAggregate) error {")
+	assert.Contains(t, string(data), "ApplyMyStruct(c context.Context, rc request.Context, evt MyStruct)")
+	assert.Contains(t, string(data), "func ApplyTestEvent(c context.Context, rc request.Context, envlp envelope.Envelope, aggregateRoot TestAggregate) error {")
+	assert.Contains(t, string(data), "func ApplyTestEvents(c context.Context, rc request.Context, envelopes []envelope.Envelope, aggregateRoot TestAggregate) error {")
 	assert.Contains(t, string(data), "func UnWrapTestEvent(envlp *envelope.Envelope) (envelope.Event, error) {")
 	//assert.Contains(t, string(data), "func AnonymizeTestEnvelopes(envelopes []envelope.Envelope) ([]envelope.Envelope, error) {")
 

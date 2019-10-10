@@ -5,10 +5,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"text/template"
 
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/model"
 )
 
 func GetPackageNameForStructs(structs []model.Struct) (string, error) {
@@ -67,20 +66,6 @@ func GetPackageNameForEnumsOrStructs(enums []model.Enum, structs []model.Struct)
 func DetermineTargetPath(inputDir string, packageName string) (string, error) {
 	if inputDir == "" || packageName == "" {
 		return "", fmt.Errorf("Input params not set")
-	}
-
-	goPath := os.Getenv("GOPATH")
-	if goPath == "" {
-		return "", fmt.Errorf("GOPATH not set")
-	}
-
-	workDir, err := os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("Error getting working dir:%s", err)
-	}
-
-	if !strings.Contains(workDir, goPath) {
-		return "", fmt.Errorf("Code %s lives outside GOPATH:%s", workDir, goPath)
 	}
 
 	baseDir := path.Base(inputDir)

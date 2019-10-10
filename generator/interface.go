@@ -1,8 +1,8 @@
 package generator
 
 import (
-	"github.com/MarcGrol/golangAnnotations/generator/annotation"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator/annotation"
+	"github.com/Duxxie/golangAnnotations/model"
 )
 
 const (

@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/model"
 	"github.com/stretchr/testify/assert"
 )
 

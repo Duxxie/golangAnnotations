@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MarcGrol/golangAnnotations/generator/generationUtil"
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/generator/generationUtil"
+	"github.com/Duxxie/golangAnnotations/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,6 +37,6 @@ func TestGenerateForRepo(t *testing.T) {
 	// check that generate code has 4 helper functions for MyStruct
 	data, err := ioutil.ReadFile(generationUtil.Prefixed("./testData/userRepo.go"))
 	assert.NoError(t, err)
-	assert.Contains(t, string(data), `func DefaultFindEndUserOnUID(c context.Context, rc request.Context, endUserUID string) (*endUserModel.EndUser, error) {
+	assert.Contains(t, string(data), `func DefaultFindEndUserOnUID(c context.Context, rc request.Context, tx *datastore.Transaction, endUserUID string) (*endUserModel.EndUser, error) {
 `)
 }

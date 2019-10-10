@@ -6,19 +6,19 @@ import (
 	"log"
 	"os"
 
-	"github.com/MarcGrol/golangAnnotations/generator"
-	"github.com/MarcGrol/golangAnnotations/generator/ast"
-	"github.com/MarcGrol/golangAnnotations/generator/event"
-	"github.com/MarcGrol/golangAnnotations/generator/eventService"
-	"github.com/MarcGrol/golangAnnotations/generator/jsonHelpers"
-	"github.com/MarcGrol/golangAnnotations/generator/repository"
-	"github.com/MarcGrol/golangAnnotations/generator/rest"
-	"github.com/MarcGrol/golangAnnotations/model"
-	"github.com/MarcGrol/golangAnnotations/parser"
+	"github.com/Duxxie/golangAnnotations/generator"
+	"github.com/Duxxie/golangAnnotations/generator/ast"
+	"github.com/Duxxie/golangAnnotations/generator/event"
+	"github.com/Duxxie/golangAnnotations/generator/eventService"
+	"github.com/Duxxie/golangAnnotations/generator/jsonHelpers"
+	"github.com/Duxxie/golangAnnotations/generator/repository"
+	"github.com/Duxxie/golangAnnotations/generator/rest"
+	"github.com/Duxxie/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/parser"
 )
 
 const (
-	version = "0.7"
+	version = "1.0"
 
 	excludeMatchPattern = "^" + generator.GenfilePrefix + ".*.go$"
 )

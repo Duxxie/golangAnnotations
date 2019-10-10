@@ -1,6 +1,6 @@
 package jsonAnnotation
 
-import "github.com/MarcGrol/golangAnnotations/generator/annotation"
+import "github.com/Duxxie/golangAnnotations/generator/annotation"
 
 const (
 	TypeEnum      = "JsonEnum"

@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/MarcGrol/golangAnnotations/model"
+	"github.com/Duxxie/golangAnnotations/model"
 )
 
 func extractFieldList(fieldList *ast.FieldList, imports map[string]string) []model.Field {

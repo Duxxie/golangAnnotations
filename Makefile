@@ -1,7 +1,7 @@
 GO := $(shell which go)
 GO_VERSION := $(shell $(GO) version)
  
-GOLANG_ANNOT_ROOT := $(shell echo "${GOPATH}/src/github.com/MarcGrol/golangAnnotations")
+GOLANG_ANNOT_ROOT := $(shell echo "~/github.com/Duxxie/golangAnnotations")
 
 all: gen test install
 
@@ -14,7 +14,6 @@ deps:
 	@echo "---------------------------"
 	@echo "Performing dependency check"
 	@echo "---------------------------"
-	go get -u golang.org/x/tools/cmd/goimports
 	go get -u -t ./...                                  # get the application with all its deps
 
 generate:
@@ -42,7 +41,6 @@ check:
 	@echo "Perform static analysis"
 	@echo "---------------------"
 	$(GO) vet ./...
-	$(GO) vet --shadow ./...
 
 test: clean check
 	@echo "---------------------"
@@ -55,7 +53,6 @@ citest:
 	@echo "---------------------"
 	@echo "Running backend tests"
 	@echo "---------------------"
-	$(GO) get -u golang.org/x/tools/cmd/goimports
 	$(GO) generate -tags ci  ./...
 	make imports
 	$(GO) test -tags ci ./...                        # run unit tests
