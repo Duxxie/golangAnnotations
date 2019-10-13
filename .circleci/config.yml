@@ -24,17 +24,13 @@ common_steps:
       name: save SHA to a file
       command: echo $CIRCLE_SHA1 > .circle-sha
 
-  - run: &cancel_redundant_job
-      name: Cancel redundant job
-      command: bash .circleci/scripts/cancel-redundant-job.sh
-
   ### Repo cache
   - cache_repo: &save_repo
-      key: v1-repo-{{ checksum ".circle-sha" }}
+      key: v0-repo-golangAnnotations-{{ checksum ".circle-sha" }}
       paths:
         - /duxxie-content
   - restore_cache: &restore_repo
-      key: v1-repo-{{ checksum ".circle-sha" }}
+      key: v0-repo-golangAnnotations-{{ checksum ".circle-sha" }}
 
 jobs:
   ######################################################################################################################
@@ -45,7 +41,6 @@ jobs:
     executor: checkout_executor
     steps:
       - checkout
-      - run: *cancel_redundant_job
       - run: *save_sha
       - save_cache: *save_repo
       - persist_to_workspace:
@@ -63,7 +58,6 @@ jobs:
     steps:
       - run: *save_sha
       - restore_cache: *restore_repo
-      - run: *cancel_redundant_job
       - run:
           name: fetch go module dependencies
           command: |
