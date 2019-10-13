@@ -65,17 +65,11 @@ jobs:
       - run:
           name: static code analysis - vet
           command: |
-            if [ $(cat .continue) == 1 ]
-            then
               go vet ./...
-            fi
       - run:
           name: perform unit tests
           command: |
-            if [ $(cat .continue) == 1 ]
-            then
               go test ./...
-            fi
 
 workflows:
   commit:
