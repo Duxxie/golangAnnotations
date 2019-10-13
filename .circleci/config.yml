@@ -28,7 +28,7 @@ common_steps:
   - cache_repo: &save_repo
       key: v0-repo-golangAnnotations-{{ checksum ".circle-sha" }}
       paths:
-        - /duxxie-content
+        - ~/github.com/Duxxie/golangAnnotations
   - restore_cache: &restore_repo
       key: v0-repo-golangAnnotations-{{ checksum ".circle-sha" }}
 
