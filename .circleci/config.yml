@@ -1,0 +1,99 @@
+version: 2.1
+
+common_vars:
+  - defaults: &defaults
+      working_directory: ~/github.com/Duxxie/golangAnnotations
+
+executors:
+  checkout_executor:
+    <<: *defaults
+    docker:
+      - image: node:11.10.1
+        environment:
+          TERM: xterm
+
+  golang_executor:
+    <<: *defaults
+    docker:
+      - image: golang:latest
+        environment:
+          TERM: xterm
+
+common_steps:
+  - save_sha: &save_sha
+      name: save SHA to a file
+      command: echo $CIRCLE_SHA1 > .circle-sha
+
+  - run: &cancel_redundant_job
+      name: Cancel redundant job
+      command: bash .circleci/scripts/cancel-redundant-job.sh
+
+  ### Repo cache
+  - cache_repo: &save_repo
+      key: v1-repo-{{ checksum ".circle-sha" }}
+      paths:
+        - /duxxie-content
+  - restore_cache: &restore_repo
+      key: v1-repo-{{ checksum ".circle-sha" }}
+
+jobs:
+  ######################################################################################################################
+  # Checkout
+  ######################################################################################################################
+
+  checkout:
+    executor: checkout_executor
+    steps:
+      - checkout
+      - run: *cancel_redundant_job
+      - run: *save_sha
+      - save_cache: *save_repo
+      - persist_to_workspace:
+          root: ~/github.com/Duxxie/golangAnnotations
+          paths:
+            - ./*
+
+  ######################################################################################################################
+  # Backend
+  ######################################################################################################################
+
+  backend:
+    executor: golang_executor
+    resource_class: xlarge
+    steps:
+      - run: *save_sha
+      - restore_cache: *restore_repo
+      - run: *cancel_redundant_job
+      - run:
+          name: fetch go module dependencies
+          command: |
+            go mod download
+      - run:
+          name: static code analysis - vet
+          command: |
+            if [ $(cat .continue) == 1 ]
+            then
+              go vet ./...
+            fi
+      - run:
+          name: perform unit tests
+          command: |
+            if [ $(cat .continue) == 1 ]
+            then
+              go test ./...
+            fi
+
+workflows:
+  commit:
+    jobs:
+      ##################################################################################################################
+      # Checkout
+      ##################################################################################################################
+      - checkout
+
+      ##################################################################################################################
+      # Backend
+      ##################################################################################################################
+      - backend:
+          requires:
+            - checkout
