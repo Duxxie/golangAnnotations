@@ -1,7 +1,7 @@
 GO := $(shell which go)
 GO_VERSION := $(shell $(GO) version)
  
-GOLANG_ANNOT_ROOT := $(shell echo "~/github.com/Duxxie/golangAnnotations")
+GOLANG_ANNOT_ROOT := $(shell echo "${HOME}/github.com/Duxxie/golangAnnotations")
 
 all: gen test install
 
@@ -12,14 +12,16 @@ help:
 
 deps:
 	@echo "---------------------------"
-	@echo "Performing dependency check"
+	@echo "Install relevant dependencies"
 	@echo "---------------------------"
-	go get -u -t ./...                                  # get the application with all its deps
+	go mod download
+	go install golang.org/x/tools/cmd/goimports
 
 generate:
 	@echo "----------------------"
 	@echo "Generating source-code"
 	@echo "----------------------"
+	make install
 	$(GO) generate ./...
 
 imports:
@@ -53,6 +55,7 @@ citest:
 	@echo "---------------------"
 	@echo "Running backend tests"
 	@echo "---------------------"
+	make install
 	$(GO) generate -tags ci  ./...
 	make imports
 	$(GO) test -tags ci ./...                        # run unit tests
