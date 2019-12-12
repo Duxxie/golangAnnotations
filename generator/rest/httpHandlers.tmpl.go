@@ -199,7 +199,16 @@ func {{$oper.Name}}(service *{{$service.Name}}) http.HandlerFunc {
 			return
 		}
 
-		for _, envlp := range rc.GetEnvelopes() {
+		eventCounter := 0
+		var envlp envelope.Envelope
+		for {
+			// handling events can result in storing new events, publish new events until list of envelopes is exhausted
+			if eventCounter < len(rc.GetEnvelopes()) {
+				envlp = rc.GetEnvelopes()[eventCounter]
+				eventCounter++
+			} else {
+				break
+			}
 			// publish an event so subscribers can act on them:
 			err = bus.New().Publish(c, rc, envlp)
 			if err != nil {
