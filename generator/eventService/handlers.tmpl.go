@@ -134,6 +134,16 @@ func (es *{{$eventServiceName}}) handleHTTPBackgroundEvent() http.HandlerFunc {
 			errorh.HandleHTTPError(c, rc, err, w, r)
 			return
 		}
+
+		for _, envlp := range rc.GetEnvelopes() {
+			// publish an event so subscribers can act on them:
+			err = bus.New().Publish(c, rc, envlp)
+			if err != nil {
+				// Note: return an error when one if these publish actions fails
+				errorh.HandleHTTPError(c, rc, err, w, r)
+				return
+			}
+		}
 	}
 }
 
