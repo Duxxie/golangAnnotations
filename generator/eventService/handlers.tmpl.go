@@ -101,6 +101,12 @@ func (es *{{$eventServiceName}}) handleHTTPBackgroundEvent() http.HandlerFunc {
 		c := ctx.New().CreateContext(r)
 		rc := request.NewMinimalContext(c, r)
 
+		queueName := r.Header.Get("X-AppEngine-QueueName")
+		if queueName == "" {
+			mylog.New().Error(c, rc, "Error reading QueueName header (unauthorised)")
+			return
+		}
+
 		retryCount, err := strconv.Atoi(r.Header.Get("X-AppEngine-TaskRetryCount"))
 		if err != nil {
 			mylog.New().Error(c, rc, "Error parsing 'X-AppEngine-TaskRetryCount': %s", err)
