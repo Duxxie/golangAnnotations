@@ -12,7 +12,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/Duxxie/platform/backend/duxxie/lib/myqueue"
 )
 
 {{range $idxService, $service := .Services -}}
