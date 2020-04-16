@@ -15,7 +15,7 @@ executors:
   golang_executor:
     <<: *defaults
     docker:
-      - image: golang:latest
+      - image: golang:1.13
         environment:
           TERM: xterm
 
