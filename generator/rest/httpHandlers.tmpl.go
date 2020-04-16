@@ -55,7 +55,7 @@ func {{$oper.Name}}(service *{{$service.Name}}) http.HandlerFunc {
 		{{if (not $noValidation) and (HasRequestContext $oper) -}}
 
 			// allow cron always
-			if r.Header.Get("X-Appengine-Cron") != "" {
+			if r.Header.Get("X-Appengine-Cron") == "" {
 				err = validateRequestContext(c, rc, {{GetRestOperationRolesString $oper}})
 				if err != nil {
 					errorh.HandleHTTPError(c, rc, err, w, r)
