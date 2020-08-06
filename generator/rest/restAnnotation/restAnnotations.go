@@ -20,6 +20,7 @@ const (
 	ParamOptional       = "optionalargs"
 	ParamRoles          = "roles"
 	ParamProducesEvents = "producesevents"
+	RawRequest          = "rawrequest"
 )
 
 func Get() []annotation.AnnotationDescriptor {
@@ -31,7 +32,7 @@ func Get() []annotation.AnnotationDescriptor {
 		},
 		{
 			Name:       TypeRestOperation,
-			ParamNames: []string{ParamNoWrap, ParamAfter, ParamPath, ParamMethod, ParamTransactional, ParamForm, ParamFormat, ParamFilename, ParamOptional, ParamRoles, ParamProducesEvents},
+			ParamNames: []string{ParamNoWrap, ParamAfter, ParamPath, ParamMethod, ParamTransactional, ParamForm, ParamFormat, ParamFilename, ParamOptional, ParamRoles, ParamProducesEvents, RawRequest},
 			Validator:  validateRestOperationAnnotation,
 		}}
 }

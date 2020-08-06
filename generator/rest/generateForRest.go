@@ -188,6 +188,7 @@ var customTemplateFuncs = template.FuncMap{
 	"BackTick":                              BackTick,
 	"ToFirstUpper":                          ToFirstUpper,
 	"Uncapitalized":                         Uncapitalized,
+	"GetRawRequest":                         GetRawRequest,
 }
 
 func BackTick() string {
@@ -494,6 +495,15 @@ func HasInput(o model.Operation) bool {
 			}
 		}
 	}
+	return false
+}
+
+func GetRawRequest(o model.Operation) bool {
+	annotations := annotation.NewRegistry(restAnnotation.Get())
+	if ann, ok := annotations.ResolveAnnotationByName(o.DocLines, restAnnotation.TypeRestOperation); ok {
+		return ann.Attributes[restAnnotation.RawRequest] == "true"
+	}
+
 	return false
 }
 

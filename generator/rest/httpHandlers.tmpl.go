@@ -84,6 +84,15 @@ func {{$oper.Name}}(service *{{$service.Name}}) http.HandlerFunc {
 				return
 			}
 
+			{{if GetRawRequest . -}}
+				bytes, err := ioutil.ReadAll(r.Body)
+				if err != nil {
+					errorh.HandleHTTPError(c, rc, errorh.NewInvalidInputErrorf(1, "Error parsing request body: %s", err), w, r)
+					return
+				}
+				{{GetInputArgName . }}.RawRequest = string(bytes)
+			{{end -}}
+
 		{{end -}}
 
 		{{if RequiresParamValidation . -}}
