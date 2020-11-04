@@ -712,7 +712,7 @@ func HasUpload(o model.Operation) bool {
 }
 
 func IsInputArg(arg model.Field) bool {
-	if IsCustomArg(arg) && !IsContextArg(arg) && !IsRequestContextArg(arg) {
+	if IsCustomArg(arg) && !IsContextArg(arg) && !IsRequestContextArg(arg) && !IsTransactionArg(arg) {
 		return true
 	}
 	return false
@@ -728,6 +728,10 @@ func IsUploadArg(f model.Field) bool {
 
 func IsContextArg(f model.Field) bool {
 	return f.TypeName == "context.Context"
+}
+
+func IsTransactionArg(f model.Field) bool {
+	return f.TypeName == "*datastore.Transaction"
 }
 
 func IsRequestContextArg(f model.Field) bool {
