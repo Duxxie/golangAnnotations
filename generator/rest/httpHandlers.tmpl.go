@@ -52,7 +52,7 @@ func {{$oper.Name}}(service *{{$service.Name}}) http.HandlerFunc {
 
 		rc := {{ $extractRequestContextMethod }}(c, r)
 
-		{{if (not $noValidation) and (HasRequestContext $oper) -}}
+		{{if and (not $noValidation) (HasRequestContext $oper) -}}
 
 			// allow cron always
 			if r.Header.Get("X-Appengine-Cron") == "" {
