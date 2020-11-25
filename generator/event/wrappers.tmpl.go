@@ -65,6 +65,11 @@ func (s *{{.Name}}) PrettyName() string {
 	return fmt.Sprintf( "%s-%s-%s", s.GetAggregateName(), s.GetEventTypeName(), s.GetUID())
 }
 
+// Is the event transient or persisted 
+func IsTransient{{.Name}}() bool {
+	return {{if IsTransientEvent . -}}true{{else}}false{{end -}}
+}
+
 // Is{{.Name}} detects of envelope carries event of type {{.Name}}
 func Is{{.Name}}(envlp *envelope.Envelope) bool {
 	return envlp.EventTypeName == {{.Name}}EventName

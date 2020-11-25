@@ -14,6 +14,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var (
+	eventStoreInstance eventStore.EventStore
+)
+
+func init() {
+	eventStoreInstance = eventStore.New(eventStore.DefaultOptionBundle, myalerts.MyAlertHandler)
+}
+
 {{range $idxService, $service := .Services -}}
 
 {{ $eventServiceName := .Name -}}
@@ -30,17 +38,30 @@ func (es *{{$eventServiceName}}) SubscribeToEvents(router *mux.Router) {
 }
 
 func (es *{{$eventServiceName}}) handleOrEnqueueEvent(c context.Context, rc request.Context, topic string, envlp envelope.Envelope) error {
-	const subscriber = "{{GetEventServiceSelfName .}}"
-	switch envlp.EventTypeName {
-		case {{range $idxOper, $evtName := GetFullEventNames .}}{{if $idxOper}}, {{end -}}{{$evtName}}{{end -}}:
-
-			// Cloud Tasks emulator not available for local development server, handle event immediately 
-			if devmode.New().IsDevMode() {
-				return es.handleEvent(c, rc, topic, envlp)
+    {{range $idxOper, $oper := .Operations -}}
+		{{if IsEventOperation $oper -}}
+			if envlp.EventTypeName == {{GetInputArgPackage $oper}}.{{GetInputArgType $oper}}EventName {
+				return es.handleEnqueuingEvent(c, rc, topic, envlp, {{GetInputArgPackage $oper}}.IsTransient{{GetInputArgType $oper}}())
 			}
-			return es.enqueueEventToBackground(c, rc, topic, envlp, subscriber)
-	}
+		{{end -}}
+	{{end -}}
+
 	return nil
+}
+
+func (es *{{$eventServiceName}}) handleEnqueuingEvent(c context.Context, rc request.Context, topic string, envlp envelope.Envelope, isTransient bool) error {
+	const subscriber = "{{GetEventServiceSelfName .}}"	
+	taskEnvlp := envlp 	
+	if !isTransient {
+		// remove event data from task to avoid that it reaches the 100kb size limit
+	    taskEnvlp.EventData = ""
+	}
+
+	// Cloud Tasks emulator not available for local development server, handle event immediately 
+	if devmode.New().IsDevMode() {
+		return es.handleEvent(c, rc, topic, taskEnvlp)
+	}
+	return es.enqueueEventToBackground(c, rc, topic, taskEnvlp, subscriber)
 }
 
 func (es *{{$eventServiceName}}) enqueueEventToBackground(c context.Context, rc request.Context, topic string, envlp envelope.Envelope, subscriber string) error {
@@ -153,28 +174,39 @@ func (es *{{$eventServiceName}}) handleHTTPBackgroundEvent() http.HandlerFunc {
 	}
 }
 
-func (es *{{$eventServiceName}}) handleEvent(c context.Context, rc request.Context, topic string, envlp envelope.Envelope) error {
+func (es *{{$eventServiceName}}) handleEvent(c context.Context, rc request.Context, topic string, envelope envelope.Envelope) error {
 	const subscriber = "{{GetEventServiceSelfName .}}"
+	envlp := &envelope
 
 	{{range $idxOper, $oper := .Operations -}}
 		{{if IsEventOperation $oper -}}
 		{
-			evt, found := {{GetInputArgPackage $oper}}.GetIfIs{{GetInputArgType $oper}}(&envlp)
-			if found {
-				err := es.{{$oper.Name}}(c, rc, *evt)
-				if err != nil {
-					msg := fmt.Sprintf("As subscriber '%s': Failed to handle '%s' (retry: %d)", subscriber, envlp.NiceName(), rc.GetTaskRetryCount())
-					myerrorhandling.HandleEventError(c, rc, topic, envlp, msg, err)
-					return err
+			if  envlp.EventTypeName == {{GetInputArgPackage $oper}}.{{GetInputArgType $oper}}EventName {
+				if !{{GetInputArgPackage $oper}}.IsTransient{{GetInputArgType $oper}}() {
+					// get event data as that is not stored in the task envelope
+					enrichedEnvlp, err := eventStoreInstance.Get(c, rc, nil, envelope.UUID)
+					if err != nil {
+						return err
+					}
+					envlp = enrichedEnvlp
+				} 
+				evt, found := {{GetInputArgPackage $oper}}.GetIfIs{{GetInputArgType $oper}}(envlp)
+				if found {
+					err := es.{{$oper.Name}}(c, rc, *evt)
+					if err != nil {
+						msg := fmt.Sprintf("As subscriber '%s': Failed to handle '%s' (retry: %d)", subscriber, envlp.NiceName(), rc.GetTaskRetryCount())
+						myerrorhandling.HandleEventError(c, rc, topic, *envlp, msg, err)
+						return err
+					}
+	
+					if rc.GetTaskRetryCount() > 0 {
+						myerrorhandling.HandleEventClearError(c, rc, topic, *envlp, fmt.Sprintf("As subscriber '%s': Retry %d of '%s' succeeded", subscriber, rc.GetTaskRetryCount(), envlp.NiceName()))
+					}
+	
+					mylog.New().Debug(c, rc, "Subscriber '%s' handled event '%s' directly", subscriber, envlp.NiceName())
+	
+					return nil
 				}
-
-				if rc.GetTaskRetryCount() > 0 {
-					myerrorhandling.HandleEventClearError(c, rc, topic, envlp, fmt.Sprintf("As subscriber '%s': Retry %d of '%s' succeeded", subscriber, rc.GetTaskRetryCount(), envlp.NiceName()))
-				}
-
-				mylog.New().Debug(c, rc, "Subscriber '%s' handled event '%s' directly", subscriber, envlp.NiceName())
-
-				return nil
 			}
 		}
 		{{end -}}
