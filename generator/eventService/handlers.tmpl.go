@@ -199,7 +199,8 @@ func (es *{{$eventServiceName}}) handleEvent(c context.Context, rc request.Conte
 						return err
 					}
 	
-					if rc.GetTaskRetryCount() > 0 {
+					// ignore first successful retry notification
+					if rc.GetTaskRetryCount() > 1 {
 						myerrorhandling.HandleEventClearError(c, rc, topic, *envlp, fmt.Sprintf("As subscriber '%s': Retry %d of '%s' succeeded", subscriber, rc.GetTaskRetryCount(), envlp.NiceName()))
 					}
 	
